@@ -14,6 +14,7 @@ class BtnClass {
  */
 
 export default (state = new BtnClass(), { type, payload }) => {
+  // console.log(state,type, payload);
   switch (type) {
     case BUTTON_CLICK:
       const { btnStyle } = payload;

@@ -22,7 +22,11 @@ class Buttons extends BaseView {
   };
 
   render() {
+    /**
+     * 使用 getResponse 將與 Container 綁定的 state 內容取出
+     */
     const counterState = this.getResponse();
+    console.log('counterState', counterState);
     const activeArray = Object.keys(counterState).filter(
       style => counterState[style]
     );
@@ -35,7 +39,7 @@ class Buttons extends BaseView {
           You click : {activeArray.join(' , ')}
         </div>
         <br />
-        <div styleName="btn-toolbar">
+        <div styleName="btn-toolbar" className="aaa">
           <div styleName="btn-group">
             <button
               styleName="btn btn-primary"

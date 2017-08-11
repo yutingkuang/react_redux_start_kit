@@ -2,7 +2,7 @@ import React from 'react';
 import BaseView, { connect } from '~/core/baseView';
 import { click, reset } from './action';
 /**
- * 引入 BaseView：使用符號 `~` 可代替指向專案目錄 `app/dist`
+ * 引入 BaseView：使用符號 `~` 可代替指向專案目錄 `app/dist` 
  *
  * BaseView 提供基本操作函式，包含：
  * 頁面導向 / 返回上一頁 / get 當前 path /
@@ -26,6 +26,10 @@ class Counter extends BaseView {
      */
     this.dispatch(click());
   };
+  /*
+    dispatch的傳入值是一個帶著type的Object (就是 action)
+    呼叫action 的函式
+  */
 
   resetHandler = () => {
     this.dispatch(reset());
@@ -54,4 +58,4 @@ class Counter extends BaseView {
  * 用法說明如下：
  * connect(state 名稱)(Component class name)
  */
-export default connect('counterStore')(Counter);
+export default connect('counter')(Counter);

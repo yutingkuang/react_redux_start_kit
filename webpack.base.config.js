@@ -6,7 +6,7 @@ const defineConstants = require('./config/define-constants');
 const assetsRoot = Config.assetsRoot;
 
 module.exports = {
-  cache: true,
+  cache: false,
   module: {
     loaders: [
       {

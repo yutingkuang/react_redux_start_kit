@@ -12,7 +12,7 @@ export default class Input extends React.Component {
      * }
      */
     this.state = {
-      name: null
+      name: 'kk'
     };
   }
 
@@ -28,9 +28,16 @@ export default class Input extends React.Component {
      */
   };
 
+  /* 
+    (function changeHandler(){}).bind(this)
+    */
+
   render() {
     /* 取得 state.name */
+    console.log(this);
+    console.log(this.refs.name);
     const { name } = this.state;
+    // const name = this.state.name;
     /**
      * 賦予元件屬性 ref 可在類別中使用 this.refs.XXX 取得元件內容
      *
@@ -39,13 +46,13 @@ export default class Input extends React.Component {
      */
     return (
       <div>
-        Who are you?{' '}
+        Who are you?
         <input
           ref="name"
           placeholder="input your name..."
           onChange={this.changeHandler}
         />
-        <SayHello name={name} />
+        <SayHello name={name} test="kk" />
       </div>
     );
   }
@@ -55,7 +62,7 @@ export default class Input extends React.Component {
  * 傳值方式則像添加屬性值：<SayHello name={name}/>
  * 上述的意思為：將 name 透過 props 的方式傳給 Component.SayHello
  */
-class SayHello extends React.Component {
+export class SayHello extends React.Component {
   constructor(props, context) {
     super(props, context);
     /**
@@ -67,10 +74,11 @@ class SayHello extends React.Component {
     /**
      * 或直接在渲染時取出 props 值
      */
-    const { name } = this.props;
+    console.log(this);
+    const { name, test } = this.props;
     return (
       <div>
-        Hello ! {name}
+        Hello ! {name},i am {test}
       </div>
     );
   }

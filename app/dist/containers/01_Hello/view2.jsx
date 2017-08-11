@@ -1,5 +1,4 @@
 import React from 'react';
-import { SayHello } from '../02_Input/view';
 
 export default class Hello extends React.Component {
   constructor(props, context) {
@@ -7,11 +6,8 @@ export default class Hello extends React.Component {
   }
 
   render() {
-    return (
-      <div>
-        Hello World!<SayHello name="test" test="hahaha" />
-      </div>
-    );
+    console.log(this.props.match.params);
+    return <div>XDDDD!</div>;
   }
 }
 

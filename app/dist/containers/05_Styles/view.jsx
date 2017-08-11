@@ -34,7 +34,7 @@ export default class Style extends React.Component {
           </a>
           )
           <div styleName="myDiv">
-            <div styleName="marioMushroom" />
+            <div className={styles['marioMushroom']} />
           </div>
         </div>
       </div>

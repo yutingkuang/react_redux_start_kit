@@ -3,7 +3,7 @@ import Reducer from './reducer';
 
 export default {
   reducers: {
-    counterStore: Reducer
+    counter: Reducer
   },
   router: {
     path: '/counter',
@@ -18,4 +18,6 @@ export default {
  * 
  * state 與 View 的綁定則使用 connect 函式
  * 參閱：03_Counter/View.jsx
+ * 
+ * counterStore是reducers的名稱（Data的key），必須在整個專案中為唯一值
  */
