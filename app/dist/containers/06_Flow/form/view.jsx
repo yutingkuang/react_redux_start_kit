@@ -3,21 +3,24 @@
  */
 import React from 'react';
 import BaseView, { applyStyles, connect } from '~/core/baseView';
-import { add } from '../action';
+import { STORE_KEY } from '../constant';
+import { add, edit } from '../action';
 import MemberClass from '../class';
-import type { State } from './type';
+import type { State, Props } from './type';
 
 /**
  * Form 元件只負責處理表單操作
  */
 @applyStyles()
-class Form extends BaseView<void, any, State> {
+class Form extends BaseView<void, Props, State> {
   //資料序號
   uidIndex: number;
   //記錄新增欄位內容
   state: State;
+  //紀錄編輯項目uid, 若無為-1
+  //nowIndex: number;
 
-  constructor(props: any, context: any) {
+  constructor(props: Props, context: any) {
     super(props, context);
     this.uidIndex = 1;
     this.state = this.initializeState();
@@ -30,6 +33,21 @@ class Form extends BaseView<void, any, State> {
       gender: 'male',
       married: false
     };
+  };
+
+  componentWillReceiveProps(nextProps: any) {
+    if (nextProps.nowIndex != -1) {
+      const memberStore: Array<MemberClass> = nextProps.response;
+      const _findIdxById = (arr, uid) => arr.findIndex(a => a.uid === uid);
+      const idx = _findIdxById(memberStore, nextProps.nowIndex);
+      if (idx != -1) {
+        this.setState(memberStore[idx]);
+      }
+    }
+  }
+
+  changeIndexHandler = (uid: number) => {
+    this.props.callbackParent(uid);
   };
 
   changeHandler = (stateKey: string): ((e: Event) => void) => (e: Event) => {
@@ -53,16 +71,24 @@ class Form extends BaseView<void, any, State> {
   submit = (e: Event): void => {
     e.preventDefault();
     if (this.state && this.validate()) {
-      //執行新增 action
-      this.dispatch(add(Object.assign(new MemberClass(), this.state)));
-      //新增增加 uid 序號
-      this.uidIndex += 1;
+      const { nowIndex } = this.props;
+      if (nowIndex == -1) {
+        //執行新增 action
+        this.dispatch(add(Object.assign(new MemberClass(), this.state)));
+        //新增增加 uid 序號
+        this.uidIndex += 1;
+      } else {
+        // 編輯
+        this.dispatch(edit(Object.assign(new MemberClass(), this.state)));
+        this.changeIndexHandler(-1);
+      }
       //初始化表單
       this.setState(this.initializeState());
     }
   };
 
   render() {
+    const { nowIndex } = this.props;
     const { name, married, gender } = this.state;
     return (
       <form>
@@ -131,4 +157,4 @@ class Form extends BaseView<void, any, State> {
   }
 }
 
-export default connect()(Form);
+export default connect(STORE_KEY)(Form);

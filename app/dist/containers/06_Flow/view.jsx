@@ -10,11 +10,28 @@ import { applyStyles } from '~/core/baseView';
  *  flow type declare
  *  React.Component<DefaultProps, Props, State>
  */
+
+type State = {
+  nowIndex: number
+};
+
 @applyStyles()
-export default class Flow extends React.Component<void, void, void> {
+export default class Flow extends React.Component<void, void, State> {
+  state: State;
+
   constructor(props: void, context: any) {
     super(props, context);
+    //console.log('Flow constructor',this);
+    this.state = {
+      nowIndex: -1
+    };
   }
+
+  onChildChanged = (newIndex: number) => {
+    this.setState({
+      nowIndex: newIndex
+    });
+  };
 
   render() {
     /**
@@ -23,9 +40,16 @@ export default class Flow extends React.Component<void, void, void> {
     return (
       <div>
         <p>Personnel Data Sheet</p>
-        <FormView />
+        <FormView
+          nowIndex={this.state.nowIndex}
+          callbackParent={this.onChildChanged}
+        />
         <hr />
-        <TableView title="Table Title" />
+        <TableView
+          nowIndex={this.state.nowIndex}
+          title="Table Title"
+          callbackParent={this.onChildChanged}
+        />
       </div>
     );
   }
