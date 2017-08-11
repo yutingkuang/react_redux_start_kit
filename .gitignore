@@ -1,3 +1,4 @@
+.bash_profile
 build/
 build-develop/
 node_modules/
