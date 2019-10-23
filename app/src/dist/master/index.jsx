@@ -77,6 +77,11 @@ export default class Doc extends Component {
       route: '/observable',
       title: 'Extension middleware - redux-observable',
       file: 'Observable.jsx'
+    },
+    {
+      route: '/context',
+      title: 'Context API vs Recompose withContext',
+      file: null
     }
   ];
 
