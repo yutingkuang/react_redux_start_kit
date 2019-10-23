@@ -33,7 +33,7 @@ class Buttons extends PureComponent {
           )(this.props.buttons)}
         </div>
         <br />
-        <div styleName="btn-toolbar">
+        <div styleName="btn-toolbar" className="aaa">
           <div styleName="btn-group">
             <button
               styleName="btn btn-primary"

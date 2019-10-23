@@ -17,6 +17,8 @@ class Form extends PureComponent<Props, State> {
   uidIndex: number = 1;
   //記錄新增欄位內容
   state: State;
+  //紀錄編輯項目uid, 若無為-1
+  //nowIndex: number;
 
   constructor(props: Props) {
     super(props);
@@ -56,6 +58,7 @@ class Form extends PureComponent<Props, State> {
   };
 
   render() {
+    const { nowIndex } = this.props;
     const { name, married, gender } = this.state;
     return (
       <form>

@@ -2,8 +2,8 @@
   font-family: Arial, 微軟正黑體;
 }
 pre[class*='prettyprint'] {
-  letter-spacing: 1px;
   word-spacing: 3px;
-  line-height: 20px;
+  letter-spacing: 1px;
   font-weight: 100;
+  line-height: 20px;
 }

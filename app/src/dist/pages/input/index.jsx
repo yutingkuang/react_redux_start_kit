@@ -22,9 +22,14 @@ export default class Input extends PureComponent {
     this.setState({ name: e.target.value });
   };
 
+  /* 
+    (function changeHandler(){}).bind(this)
+    */
+
   render() {
     /* 取得 state.name */
     const { name } = this.state;
+    // const name = this.state.name;
     /**
      * 賦予元件屬性 ref 可在類別中使用 this.refs.XXX 取得元件內容
      *
