@@ -1,59 +1,166 @@
 const path = require('path');
+const url = require('url');
 const webpack = require('webpack');
 const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
-const Config = require('./config/env.config');
-const defineConstants = require('./config/define-constants');
-const assetsRoot = Config.assetsRoot;
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
+  .BundleAnalyzerPlugin;
+/* config */
+const configEnv = require('./config/env');
+const configLocale = require('./config/locale');
+const configRemote = require('./config/remote');
+const configRoutes = require('./config/routes');
+const hljs = require('highlight.js');
 
 module.exports = {
   cache: false,
   module: {
-    loaders: [
+    rules: [
       {
-        test: /\.jsx?$/,
-        exclude: /(node_modules)/,
-        loaders: ['babel-loader?cacheDirectory=true'],
-        include: path.join(__dirname, 'app')
+        test: /\.md$/,
+        use: [
+          {
+            loader: 'html-loader'
+          },
+          {
+            loader: 'markdown-it-loader',
+            options: {
+              html: true,
+              breaks: true,
+              highlight: function(str, lang) {
+                if (lang && hljs.getLanguage(lang)) {
+                  try {
+                    return (
+                      '<pre class="hljs"><code class="language-' +
+                      lang +
+                      '">' +
+                      hljs.highlight(lang, str, true).value +
+                      '</code></pre>'
+                    );
+                  } catch (__) {}
+                }
+
+                return '';
+              }
+            }
+          }
+        ],
+        exclude: /node_modules/,
+        include: path.resolve(__dirname, 'app')
       },
       {
-        test: /\.json$/,
-        loaders: ['json-loader'],
-        include: path.join(__dirname, 'app')
+        test: /\.jsx?$/,
+        type: 'javascript/auto',
+        use: [
+          {
+            loader: 'babel-loader',
+            options: {
+              cacheDirectory: true
+            }
+          }
+        ],
+        exclude: /node_modules/,
+        include: path.resolve(__dirname, 'app')
+      },
+      {
+        test: /\.json$$/,
+        type: 'javascript/auto',
+        use: [
+          {
+            loader: 'json-loader'
+          }
+        ],
+        exclude: /node_modules/,
+        include: path.resolve(__dirname, 'app')
       },
       {
         test: /\.(jpe?g|png|gif|svg)$/i,
-        loaders: [
-          `url-loader?limit=10000&name=${assetsRoot}images/[hash].[ext]`,
-          'img-loader?progressive=true'
-        ]
+        use: [
+          {
+            loader: 'url-loader',
+            options: {
+              limit: 10000,
+              name: 'images/[hash].[ext]'
+            }
+          },
+          {
+            loader: 'img-loader'
+          }
+        ],
+        exclude: /node_modules/,
+        include: path.resolve(__dirname, 'app')
       },
       {
-        test: /\.ico$/i,
-        loader: `file-loader?name=${assetsRoot}images/[name].[ext]`
-      },
-      {
-        test: /\.(mp4|swf)$/,
-        loader: `file-loader?name=${assetsRoot}videos/[name].[ext]`
+        test: /\.(mp4|swf)$/i,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: 'media/[name].[ext]'
+            }
+          }
+        ],
+        exclude: /node_modules/,
+        include: path.resolve(__dirname, 'app')
       },
       {
         test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-        loader: `url-loader?limit=10000&mimetype=application/font-woff&name=${assetsRoot}fonts/[name].[ext]`
+        use: [
+          {
+            loader: 'url-loader',
+            options: {
+              limit: 10000,
+              mimetype: 'application/font-woff',
+              name: 'fonts/[name].[ext]'
+            }
+          }
+        ],
+        exclude: /node_modules/,
+        include: path.resolve(__dirname, 'app')
       },
       {
         test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-        loader: `file-loader?name=${assetsRoot}fonts/[name].[ext]`,
-        include: path.join(__dirname, 'app/assets/fonts')
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: 'fonts/[name].[ext]'
+            }
+          }
+        ],
+        exclude: /node_modules/,
+        include: path.resolve(__dirname, 'app/assets/fonts')
       }
     ]
   },
   resolve: {
-    extensions: ['.js', '.jsx']
-  },
-  externals: {
-    Config: JSON.stringify(defineConstants(Config))
+    extensions: ['.js', '.jsx'],
+    alias: {
+      '@assets': path.resolve(__dirname, 'app/assets'),
+      '@core': path.resolve(__dirname, 'app/core'),
+      '@src': path.resolve(__dirname, 'app/src'),
+      '@ext': path.resolve(__dirname, 'app/extensions')
+    }
   },
   plugins: [
-    new webpack.NoEmitOnErrorsPlugin(),
+    new BundleAnalyzerPlugin({
+      analyzerMode: 'static',
+      reportFilename: 'report.html',
+      defaultSizes: 'parsed',
+      openAnalyzer: false,
+      generateStatsFile: false,
+      statsOptions: null,
+      logLevel: 'info'
+    }),
+    new webpack.DefinePlugin({
+      VERSION: JSON.stringify(require('./package.json').version),
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+      CONFIG: {
+        ENV: JSON.stringify(configEnv),
+        LOCALE: JSON.stringify(configLocale),
+        REMOTE: JSON.stringify(configRemote),
+        ROUTE: JSON.stringify(configRoutes)
+      }
+    }),
     new LodashModuleReplacementPlugin({
       shorthands: true,
       collections: true
@@ -61,8 +168,9 @@ module.exports = {
   ],
   entry: {
     bundle: [
-      'babel-polyfill',
+      '@babel/polyfill',
       'es6-promise',
+      'whatwg-fetch',
       path.resolve(__dirname, 'app/main.js')
     ]
   }

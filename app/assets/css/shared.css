@@ -1,0 +1,9 @@
+* {
+  font-family: Arial, 微軟正黑體;
+}
+pre[class*='prettyprint'] {
+  word-spacing: 3px;
+  letter-spacing: 1px;
+  font-weight: 100;
+  line-height: 20px;
+}
